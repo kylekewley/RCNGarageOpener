@@ -27,6 +27,8 @@ class GarageOpener extends Component {
   constructor(props) {
     super(props);
 
+    this._storeDefaultSettings();
+
     this.client = new GarageClient();
     this._getHostAndConnect(this.client);
 
@@ -50,6 +52,35 @@ class GarageOpener extends Component {
     };
 
   }
+
+  /* Stores the default settings values if not already in the 
+   * AsyncStorage
+   */
+  _storeDefaultSettings() {
+    var settingKeys = [C.HOST_KEY,
+                       C.PORT_KEY,
+                       C.UPDATE_TOPIC_KEY,
+                       C.HISTORY_REQUEST_TOPIC_KEY,
+                       C.CONTROL_TOPIC_KEY,
+                       C.METADATA_TOPIC_KEY];
+    var defaults = [C.DEFAULT_HOST,
+                    C.DEFAULT_PORT,
+                    C.DEFAULT_UPDATE_TOPIC,
+                    C.DEFAULT_HISTORY_REQUEST_TOPIC,
+                    C.DEFAULT_CONTROL_TOPIC,
+                    C.DEFAULT_METADATA_TOPIC];
+
+    AsyncStorage.multiGet(settingKeys).then((stores) => {
+      stores.map((value, i) => {
+        // Check if the value for the key is null
+        if (!value[1]) {
+          // Not set. Assign it the default value
+          AsyncStorage.setItem(value[0], defaults[i]);
+        }
+      });
+    }).done();
+  }
+
 
   _getHostAndConnect(client) {
     AsyncStorage.multiGet([C.HOST_KEY, C.PORT_KEY]).then((stores) => {

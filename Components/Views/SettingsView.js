@@ -130,6 +130,11 @@ class SettingsView extends Component {
             <SettingsSection>MQTT Broker</SettingsSection>
             <FloatingTextInput {...sharedTextProps} keyboardType='url' storageKey={C.HOST_KEY} placeholder="Hostname" />
             <FloatingTextInput {...sharedTextProps} keyboardType='numeric' storageKey={C.PORT_KEY} placeholder="Port" />
+            <SettingsSection>MQTT Topics</SettingsSection>
+            <FloatingTextInput {...sharedTextProps} storageKey={C.UPDATE_TOPIC_KEY} placeholder="Update Topic" />
+            <FloatingTextInput {...sharedTextProps} storageKey={C.HISTORY_REQUEST_TOPIC_KEY} placeholder="History Request Topic" />
+            <FloatingTextInput {...sharedTextProps} storageKey={C.CONTROL_TOPIC_KEY} placeholder="Control Topic" />
+            <FloatingTextInput {...sharedTextProps} storageKey={C.METADATA_TOPIC_KEY} placeholder="Metadata Topic" />
           </View>
         </View>
         );

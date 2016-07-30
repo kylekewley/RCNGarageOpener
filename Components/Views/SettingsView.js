@@ -27,7 +27,7 @@ class FloatingTextInput extends Component {
   constructor(props) {
     super(props);
 
-    var initialEmpty = (this.props.value && this.props.value.length === 0);
+    var initialEmpty = !(this.props.value && this.props.value.length > 0);
     this.state = {
       isEmpty: initialEmpty,
     };

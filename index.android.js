@@ -16,6 +16,7 @@ import {
 var styles = require('./styles')
 
 var OpenerView = require('./Components/Views/OpenerView');
+var DrawerView = require('./Components/NavDrawer/DrawerView');
 
 class GarageOpener extends Component {
 

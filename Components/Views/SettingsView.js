@@ -5,6 +5,7 @@ import {
     View,
     Text,
     TextInput,
+    AsyncStorage,
 } from 'react-native';
 
 var NavigationBar = require('react-native-navbar');
@@ -13,6 +14,9 @@ var styles = require('../../styles');
 var psstyles = require('../../psstyles');
 var DrawerButton = require('../NavBar/DrawerButton');
 var NavigationTitle = require('../NavBar/NavigationTitle');
+
+const HOST_KEY = "host";
+const PORT_KEY = "port";
 
 class SettingsSection extends Component {
   render() {
@@ -31,14 +35,31 @@ class FloatingTextInput extends Component {
     var initialEmpty = !(this.props.value && this.props.value.length > 0);
     this.state = {
       isEmpty: initialEmpty,
+      value: ""
     };
+
+    // Get the value asynchronously if storageKey is set
+    if (this.props.storageKey) {
+      AsyncStorage.getItem(this.props.storageKey).then((v) => {
+        this.setState({value: v});
+        this._onChangeText(v);
+      }).done();
+    }
   }
 
   _onChangeText(text) {
+    if (!text) return;
+
     // If onChangeText is a property of FloatingTextInput, call it first
     if (this.props.onChangeText) {
       this.props.onChangeText(text);
     }
+
+    // Store the value
+    if (this.props.storageKey) {
+      AsyncStorage.setItem(this.props.storageKey, text);
+    }
+
 
     // Check if the input is empty
     var empty = text.length === 0;
@@ -67,7 +88,7 @@ class FloatingTextInput extends Component {
     return (
         <View>
         {this._renderLabel()}
-        <TextInput  {...this.props} style={psstyles.settingsTextInput} onChangeText={this._onChangeText.bind(this)} />
+        <TextInput  {...this.props} defaultValue={this.state.value} style={psstyles.settingsTextInput} onChangeText={this._onChangeText.bind(this)} />
         <View style={psstyles.settingsItemLine} />
         </View>
         );
@@ -108,8 +129,8 @@ class SettingsView extends Component {
 
           <View style={styles.settingsContentView}>
             <SettingsSection>MQTT Broker</SettingsSection>
-            <FloatingTextInput {...sharedTextProps} keyboardType='url' placeholder="Hostname" />
-            <FloatingTextInput {...sharedTextProps} keyboardType='numeric' placeholder="Port" />
+            <FloatingTextInput {...sharedTextProps} keyboardType='url' storageKey={HOST_KEY} placeholder="Hostname" />
+            <FloatingTextInput {...sharedTextProps} keyboardType='numeric' storageKey={PORT_KEY} placeholder="Port" />
           </View>
         </View>
         );

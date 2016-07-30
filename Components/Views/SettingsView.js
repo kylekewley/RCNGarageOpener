@@ -9,7 +9,8 @@ import {
 
 var NavigationBar = require('react-native-navbar');
 
-var styles = require('../../styles')
+var styles = require('../../styles');
+var psstyles = require('../../psstyles');
 var DrawerButton = require('../NavBar/DrawerButton');
 var NavigationTitle = require('../NavBar/NavigationTitle');
 
@@ -66,8 +67,8 @@ class FloatingTextInput extends Component {
     return (
         <View>
         {this._renderLabel()}
-        <TextInput  {...this.props} style={styles.settingsTextInput} onChangeText={this._onChangeText.bind(this)} />
-        <View style={styles.settingsItemLine} />
+        <TextInput  {...this.props} style={psstyles.settingsTextInput} onChangeText={this._onChangeText.bind(this)} />
+        <View style={psstyles.settingsItemLine} />
         </View>
         );
   }

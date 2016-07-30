@@ -14,6 +14,8 @@ import java.util.List;
 
 import com.learnium.RNDeviceInfo.RNDeviceInfo;
 
+import com.tuanpm.RCTMqtt.*;
+
 public class MainApplication extends Application implements ReactApplication {
 
   private final ReactNativeHost mReactNativeHost = new ReactNativeHost(this) {
@@ -25,6 +27,7 @@ public class MainApplication extends Application implements ReactApplication {
     @Override
     protected List<ReactPackage> getPackages() {
       return Arrays.<ReactPackage>asList(
+          new RCTMqttPackage(),
           new RNDeviceInfo(),
           new MainReactPackage()
       );

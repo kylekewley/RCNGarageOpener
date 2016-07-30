@@ -12,18 +12,22 @@ import {
     Text,
 } from 'react-native';
 
-var DeviceInfo = require('react-native-device-info');
-
 var styles = require('./styles')
 
 var OpenerView = require('./Components/Views/OpenerView');
 var DrawerView = require('./Components/NavDrawer/DrawerView');
 
+var GarageClient = require('./garageclient');
+
 class GarageOpener extends Component {
 
   constructor(props) {
-    console.log("Device Unique ID", DeviceInfo.getUniqueID());
     super(props);
+
+    var c = new GarageClient();
+    c.onConnect((client) => {console.log("Connected");});
+    c.onDisconnect(() => {console.log("disconnected")});
+    c.connectToServer('localhost', 1883);
 
     // Set all of the properties for the drawer
     this.state = {

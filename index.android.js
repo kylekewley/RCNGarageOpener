@@ -12,6 +12,7 @@ import {
     Text,
 } from 'react-native';
 
+var DeviceInfo = require('react-native-device-info');
 
 var styles = require('./styles')
 
@@ -21,6 +22,7 @@ var DrawerView = require('./Components/NavDrawer/DrawerView');
 class GarageOpener extends Component {
 
   constructor(props) {
+    console.log("Device Unique ID", DeviceInfo.getUniqueID());
     super(props);
 
     // Set all of the properties for the drawer

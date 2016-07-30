@@ -23,3 +23,5 @@ This section will contain the MQTT topics and messages that the server should re
 - [paho mqtt javascript](https://www.eclipse.org/paho/): Released under the Eclipse Public License
 - [MQTT client framework](https://github.com/ckrey/MQTT-Client-Framework): Released under the
   Eclipse Public License
+- [react-native-device-info](https://github.com/rebeccahughes/react-native-device-info): Released
+  under the MIT license

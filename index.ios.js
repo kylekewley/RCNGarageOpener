@@ -10,6 +10,7 @@ import {
     Navigator,
     NavigationBar,
     Text,
+    AsyncStorage,
 } from 'react-native';
 
 var styles = require('./styles')
@@ -19,17 +20,19 @@ var DrawerView = require('./Components/NavDrawer/DrawerView');
 
 var GarageClient = require('./garageclient');
 
+const HOST_KEY = "host";
+const PORT_KEY = "port";
+
 class GarageOpener extends Component {
 
   constructor(props) {
     super(props);
 
-    var c = new GarageClient();
-    c.onConnect((client) => {console.log("Connected");});
-    c.onDisconnect(() => {console.log("disconnected")});
-    c.connectToServer('localhost', 1883);
+    this.client = new GarageClient();
+    this._getHostAndConnect(this.client);
 
-
+    this.client.onConnect((client) => {console.log("Connected");});
+    this.client.onDisconnect(() => {console.log("disconnected")});
 
     // Set all of the properties for the drawer
     this.state = {
@@ -49,9 +52,17 @@ class GarageOpener extends Component {
 
   }
 
+  _getHostAndConnect(client) {
+    AsyncStorage.multiGet([HOST_KEY, PORT_KEY]).then((stores) => {
+      var host = stores[0][1];
+      var port = stores[1][1];
+      client.connectToServer(host, port);
+    }).done();
+  }
+
   // Called by the navigator to setup the new view when changed
   _renderScene(route, navigator) {
-    return <route.component route={route} navigator={navigator} />;
+    return <route.component route={route} navigator={navigator} client={this.client} />;
   }
 
 
@@ -106,7 +117,7 @@ class GarageOpener extends Component {
               style={styles.mainView}
               ref={(ref) => {this.navigator = ref}}
               initialRoute={initialRoute}
-              renderScene={this._renderScene}
+              renderScene={this._renderScene.bind(this)}
               openDrawer={drawerView.props.openDrawer}/>
         </Drawer>
         );

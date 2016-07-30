@@ -37,6 +37,36 @@ class GarageClient {
     }
   }
 
+  /*
+   * This will subscribe to the given topic or update the handler for it if
+   * already subscribed.
+   */
+  subscribeToTopicIfNeeded(topic, qos, handler) {
+    if (topic in this.subscriptions) {
+      this.subscriptions[topic] = {
+        qos: qos,
+        handler: handler
+      };
+    }else {
+      this.subscribeToTopic(topic, qos, handler);
+    }
+  }
+
+  /*
+   * This will set the topic handler for the topic to null if it exists.
+   * This should be called if the handler function for a topic belongs to a 
+   * view that will be unmounted
+   *
+   * Note: this does not actually unsubscribe from the topic. Just removes the
+   * handler.
+   */
+  removeTopicHandler(topic) {
+    if (topic in this.subscriptions) {
+      console.log("Removing topic handler for: " + topic);
+      this.subscriptions[topic].handler = undefined;
+    }
+  }
+
   _defaultMessageHandler(client, msg) {
     console.log('mqtt message default handler:', msg);
   }
@@ -80,8 +110,6 @@ class GarageClient {
       });
 
       client.on('message', (msg) => {
-        console.log("message received");
-
         var topic = msg.topic;
 
         // use the default handler if nothing else specified

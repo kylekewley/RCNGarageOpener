@@ -12,7 +12,18 @@ var styles = require('../../styles')
 var DrawerButton = require('../NavBar/DrawerButton');
 var NavigationTitle = require('../NavBar/NavigationTitle');
 
+const UPDATE_TOPIC = 'test';
+
 class OpenerView extends Component {
+
+  constructor(props) {
+    super(props);
+
+    this.props.client.subscribeToTopicIfNeeded(UPDATE_TOPIC, 2, (client, msg) => {
+      console.log("Received message" + msg);
+      //TODO: Code to update view when doors change
+    });
+  }
 
   render() {
     const titleConfig = {
@@ -36,6 +47,11 @@ class OpenerView extends Component {
           <Text>This is the opener view</Text>
         </View>
         );
+  }
+
+  componentWillUnmount() {
+    console.log("Opener View Destroyed");
+    this.props.client.removeTopicHandler(UPDATE_TOPIC);
   }
 }
 

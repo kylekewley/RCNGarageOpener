@@ -19,6 +19,9 @@ var DrawerView = require('./Components/NavDrawer/DrawerView');
 
 var GarageClient = require('./garageclient');
 
+const HOST_KEY = "host";
+const PORT_KEY = "port";
+
 class GarageOpener extends Component {
 
   constructor(props) {

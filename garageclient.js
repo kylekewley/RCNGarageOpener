@@ -25,7 +25,7 @@ class GarageClient {
    * is called with the client and the message object when a message is recieved
    * on the topic.
    */
-  _subscribeToTopic(topic, qos, handler) {
+  subscribeToTopic(topic, qos, handler) {
     this.subscriptions[topic] = {
       qos: qos,
       handler: handler
@@ -80,6 +80,8 @@ class GarageClient {
       });
 
       client.on('message', (msg) => {
+        console.log("message received");
+
         var topic = msg.topic;
 
         // use the default handler if nothing else specified
@@ -104,6 +106,8 @@ class GarageClient {
 
       client.on('connect', () => {
         this.client = client;
+
+        this._subscribeToAllTopics(client);
 
         // Execute the callback if set
         if (this.connected) this.connected(client);

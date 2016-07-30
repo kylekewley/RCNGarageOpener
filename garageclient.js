@@ -94,7 +94,18 @@ class GarageClient {
     }
   }
 
+  _isInt(value) {
+    return !isNaN(value) && (function(x) { return (x | 0) === x; })(parseFloat(value))
+  }
+
+
   connectToServer(host, port, errorHandler) {
+    if (!this._isInt(port)) {
+      if (errorHandler) errorHandler("Port number is not an integer greater than 1024");
+      return;
+    }
+
+    port = parseInt(port);
 
     mqtt.createClient({
       host: host,

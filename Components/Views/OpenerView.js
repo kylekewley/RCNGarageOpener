@@ -50,7 +50,6 @@ class OpenerView extends Component {
   }
 
   componentWillUnmount() {
-    console.log("Opener View Destroyed");
     this.props.client.removeTopicHandler(UPDATE_TOPIC);
   }
 }

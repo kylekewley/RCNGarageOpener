@@ -10,6 +10,7 @@ import {
     Navigator,
     NavigationBar,
     Text,
+    AsyncStorage,
 } from 'react-native';
 
 var styles = require('./styles')

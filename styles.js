@@ -1,5 +1,4 @@
 var { StyleSheet, PixelRatio } = require('react-native')
-var deviceScreen = require('Dimensions').get('window')
 
 /*
  * Colors:
@@ -12,15 +11,26 @@ var deviceScreen = require('Dimensions').get('window')
  *
  */
 
+const mainColor = '#009688';
+const darkMainColor = '#00796B';
+const accentColor = '#00B0FF';
+const lightBackground = '#FAFAFA';
+const lightSelect = '#ECEEF6';
+
+const navBarHeight = 56;
+const titleFontSize = 20;
+const rowHeight = 48;
+const defaultPadding = 16;
+
 module.exports = StyleSheet.create({
 
   navigationBar: {
-    backgroundColor: "#009688",
-    height: 56,
+    backgroundColor: mainColor,
+    height: navBarHeight,
   },
 
   navigationTitleView: {
-    height: 56,
+    height: navBarHeight,
     justifyContent: 'center',
     alignItems:'center',
     paddingTop: 5,
@@ -28,7 +38,7 @@ module.exports = StyleSheet.create({
 
   navigationBarText: {
     marginTop: 5,
-    fontSize: 20,
+    fontSize: titleFontSize,
     color:'white',
     opacity: 1.0,
     fontWeight:'bold',
@@ -54,7 +64,7 @@ module.exports = StyleSheet.create({
 
   drawerView: {
     flex: 1,
-    backgroundColor:'#fafafa',
+    backgroundColor: lightBackground,
   },
 
   controlPanelText: {
@@ -62,11 +72,11 @@ module.exports = StyleSheet.create({
   },
 
   drawerHeader: {
-    backgroundColor: '#009688',
+    backgroundColor: mainColor,
   },
 
   drawerTitleText: {
-    fontSize: 20,
+    fontSize: titleFontSize,
     textAlign: 'center',
     margin: 25,
     color:'white',
@@ -79,7 +89,7 @@ module.exports = StyleSheet.create({
   },
 
   selectedRowText: {
-    color: "#00B0FF",
+    color: accentColor,
     fontWeight: "bold",
     marginLeft: 26,
   },
@@ -95,23 +105,23 @@ module.exports = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'flex-start',
     alignItems: 'center',
-    paddingLeft: 16,
-    paddingRight: 16,
-    height: 48,
-    backgroundColor: '#ECEEF6',
+    paddingLeft: defaultPadding,
+    paddingRight: defaultPadding,
+    height: rowHeight,
+    backgroundColor: lightSelect,
   },
 
   row: {
     flexDirection: 'row',
     justifyContent: 'flex-start',
     alignItems: 'center',
-    paddingLeft: 16,
-    paddingRight: 16,
-    height: 48,
+    paddingLeft: defaultPadding,
+    paddingRight: defaultPadding,
+    height: rowHeight,
   },
 
   activeIcon: {
-    color: "#00B0FF"
+    color: accentColor,
   },
 
   inactiveIcon: {
@@ -129,7 +139,7 @@ module.exports = StyleSheet.create({
     color: 'black',
     fontWeight: '100',
     opacity: 0.54,
-    marginLeft: 16,
+    marginLeft: defaultPadding,
     marginBottom: 8,
     textAlign: 'left',
   },
@@ -140,14 +150,14 @@ module.exports = StyleSheet.create({
   },
 
   drawerButtonTouchable: {
-    height: 56,
+    height: navBarHeight,
     justifyContent: 'center',
     alignItems:'center',
-    paddingLeft: 16,
-    paddingRight: 16,
+    paddingLeft: defaultPadding,
+    paddingRight: defaultPadding,
   },
   drawerButton: {
-    height: 56,
+    height: navBarHeight,
     justifyContent: 'center',
     alignItems:'center',
   },

@@ -6,10 +6,11 @@ import {
     Text,
 } from 'react-native';
 
-var styles = require('./styles')
 var NavigationBar = require('react-native-navbar');
-var DrawerButton = require('./DrawerButton');
-var NavigationTitle = require('./NavigationTitle');
+
+var styles = require('../../styles')
+var DrawerButton = require('../NavBar/DrawerButton');
+var NavigationTitle = require('../NavBar/NavigationTitle');
 
 class OpenerView extends Component {
 

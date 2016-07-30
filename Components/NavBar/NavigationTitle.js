@@ -6,7 +6,7 @@ import {
     Text,
 } from 'react-native';
 
-var styles = require('./styles')
+var styles = require('../../styles')
 
 
 class NavigationTitle extends Component {

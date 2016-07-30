@@ -10,11 +10,11 @@ import {
   RecyclerViewBackedScrollView,
 } from 'react-native';
 
-var styles = require('./styles')
+var styles = require('../../styles')
 
-var OpenerView = require('./OpenerView');
-var HistoryView = require('./HistoryView');
-var SettingsView = require('./SettingsView');
+var OpenerView = require('../Views/OpenerView');
+var HistoryView = require('../Views/HistoryView');
+var SettingsView = require('../Views/SettingsView');
 
 // Define the section titles
 var SECTION_VIEW = 'Views';

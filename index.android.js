@@ -14,10 +14,8 @@ import {
 
 
 var styles = require('./styles')
-var OpenerView = require('./OpenerView');
-var HistoryView = require('./HistoryView');
-var DrawerView = require('./DrawerView');
-var DrawerButton = require('./DrawerButton');
+
+var OpenerView = require('./Components/Views/OpenerView');
 
 class GarageOpener extends Component {
 

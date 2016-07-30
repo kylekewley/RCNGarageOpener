@@ -8,7 +8,7 @@ import {
     TouchableHighlight,
 } from 'react-native';
 
-var styles = require('./styles')
+var styles = require('../../styles')
 
 class DrawerButton extends Component {
   render() {

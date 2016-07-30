@@ -13,6 +13,7 @@ var DrawerButton = require('../NavBar/DrawerButton');
 var NavigationTitle = require('../NavBar/NavigationTitle');
 
 const UPDATE_TOPIC = 'test';
+const METADATA_TOPIC = 'metadata';
 
 class OpenerView extends Component {
 

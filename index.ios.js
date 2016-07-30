@@ -20,8 +20,7 @@ var DrawerView = require('./Components/NavDrawer/DrawerView');
 
 var GarageClient = require('./garageclient');
 
-const HOST_KEY = "host";
-const PORT_KEY = "port";
+var C = require('./constants');
 
 class GarageOpener extends Component {
 
@@ -53,7 +52,10 @@ class GarageOpener extends Component {
   }
 
   _getHostAndConnect(client) {
-    AsyncStorage.multiGet([HOST_KEY, PORT_KEY]).then((stores) => {
+    AsyncStorage.multiGet([C.HOST_KEY, C.PORT_KEY]).then((stores, err) => {
+      if (err) {
+        console.log("Error getting values: " + err);
+      } 
       var host = stores[0][1];
       var port = stores[1][1];
       client.connectToServer(host, port);

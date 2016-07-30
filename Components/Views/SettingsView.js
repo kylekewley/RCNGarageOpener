@@ -15,8 +15,7 @@ var psstyles = require('../../psstyles');
 var DrawerButton = require('../NavBar/DrawerButton');
 var NavigationTitle = require('../NavBar/NavigationTitle');
 
-const HOST_KEY = "host";
-const PORT_KEY = "port";
+var C = require('../../constants');
 
 class SettingsSection extends Component {
   render() {
@@ -129,8 +128,8 @@ class SettingsView extends Component {
 
           <View style={styles.settingsContentView}>
             <SettingsSection>MQTT Broker</SettingsSection>
-            <FloatingTextInput {...sharedTextProps} keyboardType='url' storageKey={HOST_KEY} placeholder="Hostname" />
-            <FloatingTextInput {...sharedTextProps} keyboardType='numeric' storageKey={PORT_KEY} placeholder="Port" />
+            <FloatingTextInput {...sharedTextProps} keyboardType='url' storageKey={C.HOST_KEY} placeholder="Hostname" />
+            <FloatingTextInput {...sharedTextProps} keyboardType='numeric' storageKey={C.PORT_KEY} placeholder="Port" />
           </View>
         </View>
         );

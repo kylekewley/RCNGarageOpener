@@ -62,13 +62,16 @@ class GarageClient {
    */
   removeTopicHandler(topic) {
     if (topic in this.subscriptions) {
-      console.log("Removing topic handler for: " + topic);
       this.subscriptions[topic].handler = undefined;
     }
   }
 
   _defaultMessageHandler(client, msg) {
     console.log('mqtt message default handler:', msg);
+  }
+
+  isConnected() {
+    return (this._client !== null);
   }
 
   /*
@@ -88,7 +91,7 @@ class GarageClient {
 
   publish(topic, payload, qos, retain, errorHandler) {
     if (this._client !== null) {
-      client.publish(topic, payload, qos, retain);
+      this._client.publish(topic, payload, qos, retain);
     } else if (errorHandler) {
       errorHandler("Client not connected");
     }
@@ -137,14 +140,14 @@ class GarageClient {
       });
 
       client.on('closed', () => {
-        this.client = null;
+        this._client = null;
 
         // Execute the callback if set
         if (this.disconnected) this.disconnected();
       });
 
       client.on('connect', () => {
-        this.client = client;
+        this._client = client;
 
         this._subscribeToAllTopics(client);
 

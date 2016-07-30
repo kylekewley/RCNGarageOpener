@@ -20,7 +20,9 @@ const lightSelect = '#ECEEF6';
 const navBarHeight = 56;
 const titleFontSize = 20;
 const rowHeight = 48;
+const largePadding = 24;
 const defaultPadding = 16;
+const thinPadding = 8;
 
 module.exports = StyleSheet.create({
 
@@ -161,4 +163,47 @@ module.exports = StyleSheet.create({
     justifyContent: 'center',
     alignItems:'center',
   },
+
+  settingsContentView: {
+    flex: 1,
+    paddingLeft: defaultPadding,
+    paddingRight: defaultPadding,
+  },
+
+  settingsSection: {
+    color: 'black',
+    opacity: 0.87,
+    fontWeight: 'normal',
+    fontSize: 20,
+    marginTop: largePadding,
+  },
+
+  settingsLabel: {
+    color: 'black',
+    opacity: 0.38,
+    fontWeight: 'normal',
+    fontSize: 12,
+    height: 16,
+    marginTop: defaultPadding,
+  },
+
+  settingsLabelPlaceholder: {
+    height: 16,
+    marginTop: defaultPadding,
+  },
+
+  settingsTextInput: {
+    paddingTop: thinPadding,
+    fontSize: 16,
+    height: 24,
+  },
+
+  settingsItemLine: {
+    height: 1,
+    backgroundColor: 'black',
+    opacity: 0.38,
+    marginTop: thinPadding,
+  },
+
+
 });

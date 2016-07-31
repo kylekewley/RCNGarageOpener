@@ -47,8 +47,9 @@ class OpenerView extends Component {
       dataSource: ds,
     }
 
-    this._subscribeToOpenerTopics();
-
+    //55
+    //15
+    //36
     //TODO: Remove when done testing
     var metaData = {
       Name: "arduino1",
@@ -70,14 +71,16 @@ class OpenerView extends Component {
 
     // Setup view to request metadata upon connection
     this.props.client.onConnect((client) => {
+      console.log("OnConnect called");
       this._requestMetadata();
-      this.props.client.publish("home/garage/door/metadata", JSON.stringify(metaData), 2, false);
+      console.log("Exited Metadata request function");
+      //this.props.client.publish("home/garage/door/metadata", JSON.stringify(metaData), 2, false);
     });
 
     if (this.props.client.isConnected()) {
       // Request the metadata even if we are already connected
-      this._requestMetadata();
-      this.props.client.publish("home/garage/door/metadata", JSON.stringify(metaData), 2, false);
+      //this._requestMetadata();
+      //this.props.client.publish("home/garage/door/metadata", JSON.stringify(metaData), 2, false);
     }
   }
 
@@ -92,15 +95,16 @@ class OpenerView extends Component {
       var metadataTopic = results[0][1];
       var updateTopic = results[1][1];
 
-      this.props.client.subscribeToTopicIfNeeded(metadataTopic, 2, this._metadataHandler.bind(this));
-      this.props.client.subscribeToTopicIfNeeded(updateTopic, 2, this._updateHandler.bind(this));
+      this.props.client.subscribeToTopicIfNeeded(metadataTopic, 1, this._metadataHandler.bind(this));
+      this.props.client.subscribeToTopicIfNeeded(updateTopic, 1, this._updateHandler.bind(this));
     }).done();
   }
 
   _requestMetadata() {
     AsyncStorage.getItem(C.CONTROL_TOPIC_KEY).then((controlTopic) => {
       var request = JSON.stringify({"RequestType": "metadata"});
-      this.props.client.publish(controlTopic, request, 2, false);
+      this.props.client.publish(controlTopic, request, 0, false);
+      console.log("Metadata requested");
     }).done();
   }
 
@@ -122,7 +126,6 @@ class OpenerView extends Component {
     data.Doors.map((door, i) => {
       newMetaData['Doors'][door.Name] = new DoorRow(door);
     });
-    console.log("Metadata: ", newMetaData);
     this.setState({
       dataSource: this.state.dataSource.cloneWithRowsAndSections(newMetaData),
     });
@@ -135,7 +138,6 @@ class OpenerView extends Component {
   _renderRow(rowData, sectionID, rowID, highlightRow) {
     var rowStyle = styles.row;
     var textStyle = styles.rowText;
-    console.log("Render row");
 
     return (
         <TouchableHighlight underlayColor="#ECEEF6" >

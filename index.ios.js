@@ -32,7 +32,9 @@ class GarageOpener extends Component {
     this.client = new GarageClient();
     this._getHostAndConnect(this.client);
 
-    this.client.onConnect((client) => {console.log("Connected");});
+    this.client.onConnect((client) => {
+      console.log("Connected");
+    });
     this.client.onDisconnect(() => {console.log("disconnected")});
 
     // Set all of the properties for the drawer

@@ -45,6 +45,7 @@ class GarageOpener extends Component {
     this.client.onDisconnect(() => {
       if (this.connectionMade) {
         // We had an initial connection. Report to the user and reconnect
+        this.connectionErrorsDismissed = true;
         this.connectionMade = false;
         Alert.alert(
             'Connection Error',

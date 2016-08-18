@@ -158,11 +158,21 @@ class OpenerView extends Component {
     this._requestMetadata();
   }
 
+  _sendTriggerRequest(doorName) {
+
+    var trigger = {"RequestType": "trigger", "Name": doorName};
+    var triggerString = JSON.stringify(trigger);
+    AsyncStorage.getItem(C.CONTROL_TOPIC_KEY).then((controlTopic) => {
+      this.props.client.publish(controlTopic, triggerString, 2, false);
+      // TODO: Add alert upon successful trigger
+      console.log("Connected: " + this.props.client.isConnected());
+      console.log("Door triggered: " + triggerString);
+    });
+
+  }
 
   _renderRow(rowData, sectionID, rowID, highlightRow) {
     var rowStyle = styles.row;
-
-    console.log(rowData);
 
     var statusString = rowData.isClosed ? "Closed" : "Open";
 
@@ -170,7 +180,8 @@ class OpenerView extends Component {
     var dateString = DateFormat(changeDate, C.DATETIME_FORMAT);
 
     return (
-        <TouchableHighlight underlayColor="#ECEEF6" >
+        <TouchableHighlight underlayColor="#ECEEF6" onPress={() => 
+          { highlightRow(sectionID, rowID); this._sendTriggerRequest(rowData.doorName);}} >
           <View style={rowStyle}>
             <View>
             <Text style={styles.openerRowText}>{rowID} - {statusString} </Text>

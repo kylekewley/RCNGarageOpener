@@ -3,6 +3,8 @@ rootProject.name = 'GarageOpener'
 include ':react-native-mqtt'
 project(':react-native-mqtt').projectDir = new File(rootProject.projectDir,  '../node_modules/react-native-mqtt/android')
 
+include ':react-native-toast'
+project(':react-native-toast').projectDir = new File(rootProject.projectDir, '../node_modules/@remobile/react-native-toast/android')
 
 include ':app'
 include ':react-native-device-info'

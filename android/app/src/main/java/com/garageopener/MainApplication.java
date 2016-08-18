@@ -15,6 +15,7 @@ import java.util.List;
 import com.learnium.RNDeviceInfo.RNDeviceInfo;
 
 import com.tuanpm.RCTMqtt.*;
+import com.remobile.toast.*;
 
 public class MainApplication extends Application implements ReactApplication {
 
@@ -28,6 +29,7 @@ public class MainApplication extends Application implements ReactApplication {
     protected List<ReactPackage> getPackages() {
       return Arrays.<ReactPackage>asList(
           new RCTMqttPackage(),
+          new RCTToastPackage(),
           new RNDeviceInfo(),
           new MainReactPackage()
       );

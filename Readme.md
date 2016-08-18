@@ -25,3 +25,5 @@ This section will contain the MQTT topics and messages that the server should re
   Eclipse Public License
 - [react-native-device-info](https://github.com/rebeccahughes/react-native-device-info): Released
   under the MIT license
+- [react-native-toast](https://github.com/remobile/react-native-toast): Released under the MIT 
+  License

@@ -9,9 +9,11 @@ import {
     RecyclerViewBackedScrollView,
     TouchableHighlight,
     RefreshControl,
+    Alert,
 } from 'react-native';
 
 var NavigationBar = require('react-native-navbar');
+var Toast = require('@remobile/react-native-toast');
 
 var styles = require('../../styles')
 var DrawerButton = require('../NavBar/DrawerButton');
@@ -150,6 +152,8 @@ class OpenerView extends Component {
   }
 
   _updateHandler(client, msg) {
+    //TODO: modify toast to show which door is open
+    Toast.showShortBottom("Door Opened");
     console.log(msg);
   }
 
@@ -163,10 +167,15 @@ class OpenerView extends Component {
     var trigger = {"RequestType": "trigger", "Name": doorName};
     var triggerString = JSON.stringify(trigger);
     AsyncStorage.getItem(C.CONTROL_TOPIC_KEY).then((controlTopic) => {
-      this.props.client.publish(controlTopic, triggerString, 2, false);
-      // TODO: Add alert upon successful trigger
-      console.log("Connected: " + this.props.client.isConnected());
-      console.log("Door triggered: " + triggerString);
+      if (this.props.client.isConnected()) {
+        this.props.client.publish(controlTopic, triggerString, 2, false);
+      }else {
+        Alert.alert(
+            'Not Connected',
+            "The request was not sent because there is no server connection.",
+            [ {text: 'Okay', }]
+            )
+      }
     });
 
   }

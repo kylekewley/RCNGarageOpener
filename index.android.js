@@ -11,6 +11,7 @@ import {
     NavigationBar,
     Text,
     AsyncStorage,
+    Alert,
 } from 'react-native';
 
 var styles = require('./styles')
@@ -27,13 +28,37 @@ class GarageOpener extends Component {
   constructor(props) {
     super(props);
 
+    // Variable to track initial connection errors. Set to true after the first connection error
+    this.connectionErrorsDismissed = false;
+    this.connectionMade = false;
+
     this._storeDefaultSettings();
 
     this.client = new GarageClient();
+
+    // Setup the listener events
+    this.client.onConnect((client) => {
+      this.connectionMade = true;
+      console.log("Connected");
+    });
+
+    this.client.onDisconnect(() => {
+      if (this.connectionMade) {
+        // We had an initial connection. Report to the user and reconnect
+        this.connectionMade = false;
+        Alert.alert(
+            'Connection Error',
+            "The client became disconnected from the server. Reconnection attempts will be made periodically",
+            [ {text: 'Okay', }]
+            )
+          this._getHostAndConnect(this.client);
+      }
+      console.log("disconnected")
+    });
+
+    // Attempt a connection
     this._getHostAndConnect(this.client);
 
-    this.client.onConnect((client) => {console.log("Connected");});
-    this.client.onDisconnect(() => {console.log("disconnected")});
 
     // Set all of the properties for the drawer
     this.state = {
@@ -81,12 +106,28 @@ class GarageOpener extends Component {
     }).done();
   }
 
+  _handleMQTTError(client, msg) {
+    if (client.isConnected() || !this.connectionErrorsDismissed) {
+      var alertMessage = client.isConnected() ? "The server returned the error '" + msg + "'" :
+        "Error connecting to server. Reconnection attempts will be made periodically";
+
+      Alert.alert(
+          'Connection Error',
+          alertMessage,
+          [ {text: 'Okay', }]
+          )
+    }
+
+    if (!this.connectionErrorsDismissed && !client.isConnected())
+      this.connectionErrorsDismissed = true;
+  }
 
   _getHostAndConnect(client) {
     AsyncStorage.multiGet([C.HOST_KEY, C.PORT_KEY]).then((stores) => {
       var host = stores[0][1];
       var port = stores[1][1];
-      client.connectToServer(host, port);
+
+      client.connectToServer(host, port, this._handleMQTTError.bind(this, client));
     }).done();
   }
 

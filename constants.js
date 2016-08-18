@@ -16,4 +16,6 @@ C.DEFAULT_HISTORY_REQUEST_TOPIC = "home/server/garage/historyrequest";
 C.DEFAULT_CONTROL_TOPIC = "home/garage/door/control";
 C.DEFAULT_METADATA_TOPIC = "home/garage/door/metadata";
 
+C.DATETIME_FORMAT = "mmmm dS, yyyy h:MM TT";
+
 module.exports = C;

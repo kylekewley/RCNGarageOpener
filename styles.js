@@ -99,8 +99,24 @@ module.exports = StyleSheet.create({
   rowText: {
     color: "black",
     fontWeight: "bold",
-    opacity: 0.75,
+    opacity: 0.87,
     marginLeft: 26,
+  },
+
+  openerRowText: {
+    color: "black",
+    fontWeight: "bold",
+    fontSize: 14,
+    opacity: 0.87,
+    marginLeft: 13,
+  },
+
+  openerRowSubtext: {
+    color: "black",
+    fontWeight: "normal",
+    fontSize: 11,
+    opacity: 0.54,
+    marginLeft: 13,
   },
 
   selectedRow: {

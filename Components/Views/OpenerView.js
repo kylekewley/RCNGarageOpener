@@ -8,6 +8,7 @@ import {
     AsyncStorage,
     RecyclerViewBackedScrollView,
     TouchableHighlight,
+    RefreshControl,
 } from 'react-native';
 
 var NavigationBar = require('react-native-navbar');
@@ -15,6 +16,7 @@ var NavigationBar = require('react-native-navbar');
 var styles = require('../../styles')
 var DrawerButton = require('../NavBar/DrawerButton');
 var NavigationTitle = require('../NavBar/NavigationTitle');
+var DateFormat = require('dateformat');
 
 var C = require('../../constants');
 
@@ -39,12 +41,16 @@ class OpenerView extends Component {
   constructor(props) {
     super(props);
 
+    this.metadataTopic = null;
+    this.updateTopic = null;
+
     this._subscribeToOpenerTopics();
 
     var ds = new ListView.DataSource({rowHasChanged: (r1, r2) => r1.equals(r2), sectionHeaderHasChanged: (s1, s2) => s1 !== s2});
 
     this.state = {
       dataSource: ds,
+      refreshing: true,
     }
 
     //55
@@ -59,11 +65,11 @@ class OpenerView extends Component {
       Doors: [
         { "Name": "door1",
           "Status": "open",
-          "LastChanged": 1234567,
+          "LastChanged": 1470593880,
         },
         { "Name": "door2",
           "Status": "closed",
-          "LastChanged": 1234567,
+          "LastChanged": 1470591880,
         },
       ]
     };
@@ -71,16 +77,14 @@ class OpenerView extends Component {
 
     // Setup view to request metadata upon connection
     this.props.client.onConnect((client) => {
-      console.log("OnConnect called");
       this._requestMetadata();
-      console.log("Exited Metadata request function");
-      //this.props.client.publish("home/garage/door/metadata", JSON.stringify(metaData), 2, false);
+      this.props.client.publish("home/garage/door/metadata", JSON.stringify(metaData), 2, false);
     });
 
     if (this.props.client.isConnected()) {
       // Request the metadata even if we are already connected
-      //this._requestMetadata();
-      //this.props.client.publish("home/garage/door/metadata", JSON.stringify(metaData), 2, false);
+      this._requestMetadata();
+      this.props.client.publish("home/garage/door/metadata", JSON.stringify(metaData), 2, false);
     }
   }
 
@@ -92,18 +96,20 @@ class OpenerView extends Component {
     keys = [C.METADATA_TOPIC_KEY, C.UPDATE_TOPIC_KEY];
 
     AsyncStorage.multiGet(keys).then((results) => {
-      var metadataTopic = results[0][1];
-      var updateTopic = results[1][1];
+      // Store the values so we can unsubscribe later
+      this.metadataTopic = results[0][1];
+      this.updateTopic = results[1][1];
 
-      this.props.client.subscribeToTopicIfNeeded(metadataTopic, 1, this._metadataHandler.bind(this));
-      this.props.client.subscribeToTopicIfNeeded(updateTopic, 1, this._updateHandler.bind(this));
+      this.props.client.subscribeToTopicIfNeeded(this.metadataTopic, 2, this._metadataHandler.bind(this));
+      this.props.client.subscribeToTopicIfNeeded(this.updateTopic, 2, this._updateHandler.bind(this));
+
     }).done();
   }
 
   _requestMetadata() {
     AsyncStorage.getItem(C.CONTROL_TOPIC_KEY).then((controlTopic) => {
       var request = JSON.stringify({"RequestType": "metadata"});
-      this.props.client.publish(controlTopic, request, 0, false);
+      this.props.client.publish(controlTopic, request, 2, false);
       console.log("Metadata requested");
     }).done();
   }
@@ -114,8 +120,6 @@ class OpenerView extends Component {
     var data;
     try {
       data = JSON.parse(msg.data);
-
-
     }catch(e) {
       console.log("Error parsing metadata: ",msg);
     }
@@ -135,14 +139,28 @@ class OpenerView extends Component {
     console.log(msg);
   }
 
+  _onRefresh() {
+    this.setState({refreshing: true});
+  }
+
+
   _renderRow(rowData, sectionID, rowID, highlightRow) {
     var rowStyle = styles.row;
-    var textStyle = styles.rowText;
+
+    console.log(rowData);
+
+    var statusString = rowData.isClosed ? "Closed" : "Open";
+
+    var changeDate = new Date(rowData.lastChangeTime * 1000);
+    var dateString = DateFormat(changeDate, C.DATETIME_FORMAT);
 
     return (
         <TouchableHighlight underlayColor="#ECEEF6" >
           <View style={rowStyle}>
-            <Text style={textStyle}> {rowID} </Text>
+            <View>
+            <Text style={styles.openerRowText}>{rowID} - {statusString} </Text>
+            <Text style={styles.openerRowSubtext}>{statusString} {dateString} </Text>
+            </View>
           </View>
         </TouchableHighlight>
         );
@@ -186,21 +204,30 @@ class OpenerView extends Component {
             style={styles.navigationBar}
             leftButton={ <DrawerButton onPress={() => this.props.navigator.props.openDrawer()}/>}
             />
-          <ListView
-          dataSource={this.state.dataSource}
-          renderRow={this._renderRow.bind(this)}
-          renderScrollComponent={props => <RecyclerViewBackedScrollView {...props} />}
-          renderSeparator={this._renderSeperator}
-          renderSectionHeader={this._renderSectionHeader}
-          enableEmptySections={true}
-          />
+          <View style={{ flex: 1}}>
+            <ListView
+            dataSource={this.state.dataSource}
+            renderRow={this._renderRow.bind(this)}
+            renderScrollComponent={props => <RecyclerViewBackedScrollView {...props} />}
+            renderSeparator={this._renderSeperator}
+            renderSectionHeader={this._renderSectionHeader}
+            enableEmptySections={true}
+            refreshControl={
+              <RefreshControl
+                refreshing={this.state.refreshing}
+                onRefresh={this._onRefresh.bind(this)}/>}
+            />
+          </View>
         </View>
         );
   }
 
   componentWillUnmount() {
-    this.props.client.removeTopicHandler(C.UPDATE_TOPIC_KEY);
-    this.props.client.removeTopicHandler(C.METADATA_TOPIC_KEY);
+    if (this.updateTopic)
+      this.props.client.removeTopicHandler(this.updateTopic);
+
+    if (this.metadataTopic)
+      this.props.client.removeTopicHandler(this.metadataTopic);
   }
 }
 

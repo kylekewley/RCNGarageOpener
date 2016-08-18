@@ -5,6 +5,7 @@ class GarageClient {
   constructor() {
     this.clientID = DeviceInfo.getUniqueID() || '';
     this._client = null;
+    this.connectionHandlers = [];
 
     // Track pairs of subscription/handler functions
     this.subscriptions = {};
@@ -78,9 +79,8 @@ class GarageClient {
    * Called whenever the client is connected. callback(client)
    */
   onConnect(callback) {
-    this.connected = callback;
+    this.connectionHandlers.push(callback);
   }
-
 
   /*
    * Called whenever the client is disconnected. callback()
@@ -152,7 +152,7 @@ class GarageClient {
         this._subscribeToAllTopics(client);
 
         // Execute the callback if set
-        if (this.connected) this.connected(client);
+        this.connectionHandlers.map((handler) => handler(client));
       });
 
       client.connect();

@@ -46,16 +46,14 @@ class OpenerView extends Component {
 
     this._subscribeToOpenerTopics();
 
-    var ds = new ListView.DataSource({rowHasChanged: (r1, r2) => r1.equals(r2), sectionHeaderHasChanged: (s1, s2) => s1 !== s2});
+    var ds = new ListView.DataSource({rowHasChanged: (r1, r2) => r1.equals(r2),
+                                      sectionHeaderHasChanged: (s1, s2) => s1 !== s2});
 
     this.state = {
       dataSource: ds,
       refreshing: true,
     }
 
-    //55
-    //15
-    //36
     //TODO: Remove when done testing
     var metaData = {
       Name: "arduino1",
@@ -74,17 +72,28 @@ class OpenerView extends Component {
       ]
     };
 
+    AsyncStorage.getItem(C.CONTROL_TOPIC_KEY).then((controlTopic) => {
+      this.props.client.publish("home/garage/door/metadata", JSON.stringify(metaData), 2, false);
+
+      this.props.client.subscribeToTopicIfNeeded(controlTopic, 2, (client, msg) => {
+        jsonObject = JSON.parse(msg.data);
+        if (jsonObject["RequestType"] == "metadata") {
+          this.props.client.publish("home/garage/door/metadata", JSON.stringify(metaData), 2, false);
+        }
+      });
+    }).done();
+    // END TODO
+
+
 
     // Setup view to request metadata upon connection
     this.props.client.onConnect((client) => {
       this._requestMetadata();
-      this.props.client.publish("home/garage/door/metadata", JSON.stringify(metaData), 2, false);
     });
 
     if (this.props.client.isConnected()) {
-      // Request the metadata even if we are already connected
+      // Request the metadata if we are already connected
       this._requestMetadata();
-      this.props.client.publish("home/garage/door/metadata", JSON.stringify(metaData), 2, false);
     }
   }
 
@@ -100,8 +109,11 @@ class OpenerView extends Component {
       this.metadataTopic = results[0][1];
       this.updateTopic = results[1][1];
 
-      this.props.client.subscribeToTopicIfNeeded(this.metadataTopic, 2, this._metadataHandler.bind(this));
-      this.props.client.subscribeToTopicIfNeeded(this.updateTopic, 2, this._updateHandler.bind(this));
+      this.props.client.subscribeToTopicIfNeeded(this.metadataTopic, 2,
+          this._metadataHandler.bind(this));
+
+      this.props.client.subscribeToTopicIfNeeded(this.updateTopic, 2,
+          this._updateHandler.bind(this));
 
     }).done();
   }
@@ -124,6 +136,7 @@ class OpenerView extends Component {
       console.log("Error parsing metadata: ",msg);
     }
 
+
     var newMetaData = {};
     newMetaData['Doors'] = {};
 
@@ -132,6 +145,7 @@ class OpenerView extends Component {
     });
     this.setState({
       dataSource: this.state.dataSource.cloneWithRowsAndSections(newMetaData),
+      refreshing: false,
     });
   }
 
@@ -141,6 +155,7 @@ class OpenerView extends Component {
 
   _onRefresh() {
     this.setState({refreshing: true});
+    this._requestMetadata();
   }
 
 

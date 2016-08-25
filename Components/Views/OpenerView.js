@@ -31,10 +31,9 @@ class DoorRow {
   }
 
   equals(row2) {
-    return (
-        this.doorName===row2.doorName &&
-        this.isClosed===row2.isClosed &&
-        this.lastChangeTime===row2.lastChangeTime);
+    return (this.doorName===row2.doorName &&
+            this.isClosed===row2.isClosed &&
+            this.lastChangeTime===row2.lastChangeTime);
   }
 }
 
@@ -48,45 +47,13 @@ class OpenerView extends Component {
 
     this._subscribeToOpenerTopics();
 
-    var ds = new ListView.DataSource({rowHasChanged: (r1, r2) => r1.equals(r2),
+    var ds = new ListView.DataSource({rowHasChanged: (r1, r2) => (!r1.equals(r2)),
                                       sectionHeaderHasChanged: (s1, s2) => s1 !== s2});
 
     this.state = {
       dataSource: ds,
       refreshing: true,
     }
-
-    //TODO: Remove when done testing
-    var metaData = {
-      Name: "arduino1",
-      UTCOffset: -28800,
-      IsController: true,
-
-      Doors: [
-        { "Name": "door1",
-          "Status": "open",
-          "LastChanged": 1470593880,
-        },
-        { "Name": "door2",
-          "Status": "closed",
-          "LastChanged": 1470591880,
-        },
-      ]
-    };
-
-    AsyncStorage.getItem(C.CONTROL_TOPIC_KEY).then((controlTopic) => {
-      this.props.client.publish("home/garage/door/metadata", JSON.stringify(metaData), 2, false);
-
-      this.props.client.subscribeToTopicIfNeeded(controlTopic, 2, (client, msg) => {
-        jsonObject = JSON.parse(msg.data);
-        if (jsonObject["RequestType"] == "metadata") {
-          this.props.client.publish("home/garage/door/metadata", JSON.stringify(metaData), 2, false);
-        }
-      });
-    }).done();
-    // END TODO
-
-
 
     // Setup view to request metadata upon connection
     this.props.client.onConnect((client) => {
@@ -136,6 +103,7 @@ class OpenerView extends Component {
       data = JSON.parse(msg.data);
     }catch(e) {
       console.log("Error parsing metadata: ",msg);
+      return;
     }
 
 
@@ -152,9 +120,43 @@ class OpenerView extends Component {
   }
 
   _updateHandler(client, msg) {
-    //TODO: modify toast to show which door is open
-    Toast.showShortBottom("Door Opened");
-    console.log(msg);
+    var data;
+    try {
+      data = JSON.parse(msg.data);
+    }catch(e) {
+      console.log("Error parsing door update", msg);
+      return;
+    }
+
+    // Figure out which door to update
+    var updatedDoor = data.DoorName;
+    var newMetaData = {};
+    newMetaData['Doors'] = {};
+
+    for (var i = 0; i < this.state.dataSource.getRowCount(); ++i) {
+      var row = this.state.dataSource.getRowData(0, i);
+      if (row.doorName === updatedDoor) {
+        row = new DoorRow({
+          Name: data.DoorName,
+          Status: data.Status,
+          LastChanged: data.Timestamp,
+        });
+      }else {
+        row = new DoorRow({
+          Name: row.doorName,
+          Status: row.isClosed ? "closed" : "open",
+          LastChanged: row.lastChangeTime
+        });
+      }
+
+      newMetaData['Doors'][row.doorName] = row;
+    }
+
+    this.setState({
+      dataSource: this.state.dataSource.cloneWithRowsAndSections(newMetaData),
+    });
+
+    Toast.showShortBottom(updatedDoor + " " + data.Status);
   }
 
   _onRefresh() {

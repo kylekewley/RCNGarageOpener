@@ -8,8 +8,8 @@
   "dependencies": {
     "@remobile/react-native-toast": "^1.0.4",
     "dateformat": "^1.0.12",
-    "react": "15.2.1",
-    "react-native": "0.30.0",
+    "react": "^15.3.0",
+    "react-native": "^0.32.0",
     "react-native-device-info": "^0.9.3",
     "react-native-drawer": "^2.2.6",
     "react-native-mqtt": "git+https://github.com/kylekewley/react-native-mqtt.git",

@@ -10,9 +10,13 @@ var NavigationBar = require('react-native-navbar');
 
 var styles = require('../../styles')
 var DrawerButton = require('../NavBar/DrawerButton');
+var CalendarButton = require('../NavBar/CalendarButton');
 var NavigationTitle = require('../NavBar/NavigationTitle');
 
 class HistoryView extends Component {
+
+  _openDateSelector() {
+  }
 
   render() {
     const titleConfig = {
@@ -31,6 +35,7 @@ class HistoryView extends Component {
             style={styles.navigationBar}
             statusBar={statusBarConfig}
             leftButton={ <DrawerButton onPress={() => this.props.navigator.props.openDrawer()}/>}
+            rightButton={ <CalendarButton onPress={this._openDateSelector.bind(this)}/>}
             />
           <Text>This is the history view</Text>
         </View>

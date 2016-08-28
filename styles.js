@@ -167,6 +167,14 @@ module.exports = StyleSheet.create({
     backgroundColor: '#e5e5e5',
   },
 
+  calendarButtonTouchable: {
+    height: navBarHeight,
+    justifyContent: 'center',
+    alignItems:'center',
+    paddingLeft: defaultPadding,
+    paddingRight: defaultPadding,
+  },
+
   drawerButtonTouchable: {
     height: navBarHeight,
     justifyContent: 'center',

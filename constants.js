@@ -9,7 +9,7 @@ C.CONTROL_TOPIC_KEY = "controltopic"
 C.METADATA_TOPIC_KEY = "metadatatopic";
 
 C.DEFAULT_HOST = "localhost";
-C.DEFAULT_PORT = "1338";
+C.DEFAULT_PORT = "1883";
 
 C.DEFAULT_UPDATE_TOPIC = "home/garage/door/update";
 C.DEFAULT_HISTORY_REQUEST_TOPIC = "home/server/garage/historyrequest";

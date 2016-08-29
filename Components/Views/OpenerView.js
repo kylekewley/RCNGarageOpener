@@ -25,9 +25,9 @@ var C = require('../../constants');
 
 class DoorRow {
   constructor(JSONObject) {
-    this.doorName = JSONObject["Name"];
+    this.doorName = JSONObject["DoorName"];
     this.isClosed = JSONObject["Status"]=="closed";
-    this.lastChangeTime = JSONObject["LastChanged"];
+    this.lastChangeTime = JSONObject["Timestamp"];
   }
 
   equals(row2) {
@@ -111,7 +111,7 @@ class OpenerView extends Component {
     newMetaData['Doors'] = {};
 
     data.Doors.map((door, i) => {
-      newMetaData['Doors'][door.Name] = new DoorRow(door);
+      newMetaData['Doors'][door.DoorName] = new DoorRow(door);
     });
     this.setState({
       dataSource: this.state.dataSource.cloneWithRowsAndSections(newMetaData),
@@ -137,15 +137,15 @@ class OpenerView extends Component {
       var row = this.state.dataSource.getRowData(0, i);
       if (row.doorName === updatedDoor) {
         row = new DoorRow({
-          Name: data.DoorName,
+          DoorName: data.DoorName,
           Status: data.Status,
-          LastChanged: data.Timestamp,
+          Timestamp: data.Timestamp,
         });
       }else {
         row = new DoorRow({
-          Name: row.doorName,
+          DoorName: row.doorName,
           Status: row.isClosed ? "closed" : "open",
-          LastChanged: row.lastChangeTime
+          Timestamp: row.lastChangeTime
         });
       }
 
